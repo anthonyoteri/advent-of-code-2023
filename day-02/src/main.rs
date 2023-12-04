@@ -1,4 +1,4 @@
-#![allow(dead_code)]
+use std::cmp::max;
 
 #[derive(Debug, Clone)]
 struct Game {
@@ -16,6 +16,16 @@ impl Game {
         }
         true
     }
+
+    fn max(&self) -> Bag {
+        let mut power = Bag::default();
+        for bag in &self.bags {
+            power.red = max(power.red, bag.red);
+            power.green = max(power.green, bag.green);
+            power.blue = max(power.blue, bag.blue);
+        }
+        power
+    }
 }
 
 #[derive(Debug, Clone, Default, Eq, PartialEq)]
@@ -23,6 +33,12 @@ struct Bag {
     red: u32,
     green: u32,
     blue: u32,
+}
+
+impl Bag {
+    fn power(&self) -> u32 {
+        self.red * self.green * self.blue
+    }
 }
 
 fn parse_input(input: &str) -> Vec<Game> {
@@ -85,10 +101,16 @@ fn part_1(input: &str) -> usize {
         .sum()
 }
 
+fn part_2(input: &str) -> u32 {
+    let games = parse_input(input);
+
+    games.iter().map(|g| g.max().power()).sum()
+}
 fn main() {
     let input = include_str!("../input.txt");
 
     println!("Part 1: {}", part_1(input));
+    println!("Part 2: {}", part_2(input));
 }
 
 #[cfg(test)]
@@ -149,5 +171,63 @@ mod tests {
         let input = include_str!("../input_test_part1.txt");
 
         assert_eq!(part_1(input), 8);
+    }
+
+    #[test]
+    fn test_max() {
+        let input = include_str!("../input_test_part1.txt");
+        let games = parse_input(input);
+
+        assert_eq!(
+            games[0].max(),
+            Bag {
+                red: 4,
+                green: 2,
+                blue: 6
+            }
+        );
+
+        assert_eq!(
+            games[1].max(),
+            Bag {
+                red: 1,
+                green: 3,
+                blue: 4
+            }
+        );
+
+        assert_eq!(
+            games[2].max(),
+            Bag {
+                red: 20,
+                green: 13,
+                blue: 6
+            }
+        );
+
+        assert_eq!(
+            games[3].max(),
+            Bag {
+                red: 14,
+                green: 3,
+                blue: 15,
+            }
+        );
+
+        assert_eq!(
+            games[4].max(),
+            Bag {
+                red: 6,
+                green: 3,
+                blue: 2
+            }
+        );
+    }
+
+    #[test]
+    fn test_part_2() {
+        let input = include_str!("../input_test_part1.txt");
+
+        assert_eq!(part_2(input), 2286);
     }
 }
