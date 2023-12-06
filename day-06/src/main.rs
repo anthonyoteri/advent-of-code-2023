@@ -55,9 +55,38 @@ fn part_1(input: &str) -> usize {
     results.iter().map(Vec::len).product()
 }
 
+#[instrument]
+fn part_2(input: &str) -> usize {
+    let input = part2_preformat(input);
+    let (_, races) = parse_times(&input).unwrap();
+
+    let results = races
+        .iter()
+        .map(|r| {
+            r.distance()
+                .into_iter()
+                .filter(|&d| d > r.record)
+                .collect::<Vec<u64>>()
+        })
+        .collect::<Vec<Vec<u64>>>();
+
+    results.iter().map(Vec::len).product()
+}
+
+fn part2_preformat(input: &str) -> String {
+    let input = String::from(input);
+    input
+        .lines()
+        .map(|l| l.replace(" ", ""))
+        .map(|l| l.replace(":", ": "))
+        .collect::<Vec<String>>()
+        .join("\n")
+}
+
 fn main() {
     let input = include_str!("../input.txt");
     println!("Part 1: {}", part_1(input));
+    println!("Part 2: {}", part_2(input));
 }
 
 #[cfg(test)]
@@ -66,8 +95,13 @@ mod tests {
 
     #[test_log::test]
     fn test_part_1() {
-        tracing::info!("Hello world");
         let input = include_str!("../test-input.txt");
         assert_eq!(part_1(input), 288);
+    }
+
+    #[test_log::test]
+    fn test_part_2() {
+        let input = include_str!("../test-input.txt");
+        assert_eq!(part_2(input), 71503);
     }
 }
