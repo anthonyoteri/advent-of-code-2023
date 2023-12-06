@@ -1,4 +1,4 @@
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 #[derive(Debug, Clone)]
 enum Value {
@@ -75,6 +75,79 @@ fn part_1(input: &str) -> u32 {
     sum
 }
 
+fn part_2(input: &str) -> u32 {
+    let numbers = input
+        .lines()
+        .enumerate()
+        .flat_map(|(row, line)| {
+            extract_numbers(line)
+                .into_iter()
+                .map(move |(col, len, number)| {
+                    (
+                        (col..col + len)
+                            .map(|c| Address {
+                                row: row as i32,
+                                col: c as i32,
+                            })
+                            .collect::<Vec<_>>(),
+                        number,
+                    )
+                })
+        })
+        .collect::<Vec<(Vec<Address>, u32)>>();
+
+    let grid = input
+        .lines()
+        .enumerate()
+        .flat_map(|(row, line)| {
+            line.chars().enumerate().map(move |(col, character)| {
+                (
+                    Address {
+                        row: row as i32,
+                        col: col as i32,
+                    },
+                    match character {
+                        '.' => None,
+                        c if c.is_ascii_digit() => Some(Value::Digit(c.to_digit(10).unwrap())),
+                        c => Some(Value::Symbol(c)),
+                    },
+                )
+            })
+        })
+        .collect::<BTreeMap<Address, Option<Value>>>();
+
+    let gears: BTreeSet<Address> = grid
+        .iter()
+        .filter_map(|(address, value)| match value {
+            Some(Value::Symbol('*')) => Some(address.clone()),
+            _ => None,
+        })
+        .collect();
+
+    dbg!(&gears);
+
+    let mut sum = 0;
+    for gear in gears {
+        let bounding_numbers = numbers
+            .iter()
+            .filter_map(|(addresses, number)| {
+                if addresses.iter().flat_map(bounding_box).any(|a| a == gear) {
+                    Some(number)
+                } else {
+                    None
+                }
+            })
+            .collect::<Vec<_>>();
+
+        if bounding_numbers.len() == 2 {
+            println!("Including numbers {:?}", bounding_numbers);
+            sum += bounding_numbers.into_iter().product::<u32>()
+        }
+    }
+
+    sum
+}
+
 fn extract_numbers(input: &str) -> Vec<(usize, usize, u32)> {
     let mut result = Vec::default();
     let mut current_number = String::new();
@@ -145,6 +218,7 @@ fn bounding_box(address: &Address) -> Vec<Address> {
 fn main() {
     let input = include_str!("../input.txt");
     println!("Part 1: {}", part_1(input));
+    println!("Part 2: {}", part_2(input));
 }
 
 #[cfg(test)]
@@ -165,5 +239,11 @@ mod test {
     fn test_part1() {
         let input = include_str!("../test-input.txt");
         assert_eq!(part_1(input), 4361);
+    }
+
+    #[test]
+    fn test_part2() {
+        let input = include_str!("../test-input.txt");
+        assert_eq!(part_2(input), 467835);
     }
 }
