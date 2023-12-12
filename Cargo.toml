@@ -21,6 +21,7 @@ thiserror = "1.0.50"
 dhat = "0.3.2"
 env_logger = "0.10.1"
 test-log = "0.2.13"
+regex = "1.10.2"
 
 
 [profile.flamegraph]
