@@ -1,12 +1,10 @@
 fn part_1(input: &str) -> u32 {
     let values: Vec<u32> = input
         .lines()
-        .into_iter()
         .map(|line| {
             let numbers: Vec<u8> = line
                 .chars()
-                .into_iter()
-                .filter(|c| c.is_digit(10))
+                .filter(|c| c.is_ascii_digit())
                 .map(|c| c.to_digit(10).unwrap() as u8)
                 .collect();
 
@@ -20,9 +18,8 @@ fn part_1(input: &str) -> u32 {
 fn part_2(input: &str) -> u32 {
     let values: Vec<u32> = input
         .lines()
-        .into_iter()
         .map(|line| {
-            let before = line.clone();
+            let before = line;
 
             let line = line
                 .to_owned()
@@ -58,14 +55,13 @@ fn part_2(input: &str) -> u32 {
 
             let numbers: Vec<u8> = line
                 .chars()
-                .into_iter()
-                .filter(|c| c.is_digit(10))
+                .filter(|c| c.is_ascii_digit())
                 .map(|c| c.to_digit(10).unwrap() as u8)
                 .collect();
 
             let sum: u32 = numbers[0] as u32 * 10 + *numbers.last().unwrap() as u32;
             println!("{before} -> {line} => {numbers:?} => {sum}");
-            assert!(sum >= 10 && sum <= 99);
+            assert!((10..=99).contains(&sum));
             sum
         })
         .collect();

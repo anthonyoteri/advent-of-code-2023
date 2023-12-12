@@ -47,7 +47,7 @@ fn parse_input(input: &str) -> Vec<Game> {
     for line in input.lines() {
         let mut bags = Vec::new();
 
-        let (game_part, bags_part) = line.split_once(":").unwrap();
+        let (game_part, bags_part) = line.split_once(':').unwrap();
 
         let game_id = game_part
             .strip_prefix("Game ")

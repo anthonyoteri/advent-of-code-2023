@@ -77,8 +77,8 @@ fn part2_preformat(input: &str) -> String {
     let input = String::from(input);
     input
         .lines()
-        .map(|l| l.replace(" ", ""))
-        .map(|l| l.replace(":", ": "))
+        .map(|l| l.replace(' ', ""))
+        .map(|l| l.replace(':', ": "))
         .collect::<Vec<String>>()
         .join("\n")
 }

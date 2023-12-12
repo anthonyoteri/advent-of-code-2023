@@ -11,7 +11,7 @@ impl Card {
     fn winner(&self) -> usize {
         let mut count = 0;
         for guess in &self.winning_numbers {
-            if self.game_numbers.contains(&guess) {
+            if self.game_numbers.contains(guess) {
                 count += 1;
             }
         }
@@ -33,7 +33,7 @@ fn parse_input(input: &str) -> Vec<Card> {
     for line in input.lines() {
         let mut card = Card::default();
 
-        let (id_part, numbers_part) = line.split_once(":").unwrap();
+        let (id_part, numbers_part) = line.split_once(':').unwrap();
         card.id = id_part
             .strip_prefix("Card")
             .unwrap()
@@ -41,7 +41,7 @@ fn parse_input(input: &str) -> Vec<Card> {
             .parse::<usize>()
             .unwrap();
 
-        let (winning_numbers_part, gamen_numbers_part) = numbers_part.split_once("|").unwrap();
+        let (winning_numbers_part, gamen_numbers_part) = numbers_part.split_once('|').unwrap();
 
         card.winning_numbers = winning_numbers_part
             .split_whitespace()
@@ -97,8 +97,8 @@ fn part_2(input: &str) -> usize {
 
 fn main() {
     let input = include_str!("../input.txt");
-    println!("Part 1: {}", part_1(&input));
-    println!("Part 2: {}", part_2(&input));
+    println!("Part 1: {}", part_1(input));
+    println!("Part 2: {}", part_2(input));
 }
 
 #[cfg(test)]
