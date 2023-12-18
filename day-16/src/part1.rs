@@ -55,7 +55,7 @@ fn parse(input: &str) -> IResult<&str, HashMap<IVec2, Tile>> {
     Ok((input, grid))
 }
 
-fn step(grid: &HashMap<IVec2, Tile>, beams: &Vec<Beam>) -> Vec<Beam> {
+fn step(grid: &HashMap<IVec2, Tile>, beams: &[Beam]) -> Vec<Beam> {
     beams
         .iter()
         .flat_map(|beam| {
@@ -146,7 +146,7 @@ fn step(grid: &HashMap<IVec2, Tile>, beams: &Vec<Beam>) -> Vec<Beam> {
         .collect_vec()
 }
 
-fn check_bounds(_grid: &HashMap<IVec2, Tile>, beams: &Vec<Beam>, boundary: &IVec2) -> Vec<Beam> {
+fn check_bounds(_grid: &HashMap<IVec2, Tile>, beams: &[Beam], boundary: &IVec2) -> Vec<Beam> {
     beams
         .iter()
         .filter(|beam| {
@@ -159,7 +159,7 @@ fn check_bounds(_grid: &HashMap<IVec2, Tile>, beams: &Vec<Beam>, boundary: &IVec
         .collect_vec()
 }
 
-fn check_history(beams: &Vec<Beam>, visited: &HashSet<Beam>) -> Vec<Beam> {
+fn check_history(beams: &[Beam], visited: &HashSet<Beam>) -> Vec<Beam> {
     beams
         .iter()
         .filter(|beam| !visited.contains(beam))
@@ -167,6 +167,7 @@ fn check_history(beams: &Vec<Beam>, visited: &HashSet<Beam>) -> Vec<Beam> {
         .collect_vec()
 }
 
+#[cfg(test)]
 fn visualize(grid: &HashMap<IVec2, Tile>, visited: &HashSet<Beam>) {
     let boundary = grid.keys().fold(IVec2::new(0, 0), |max, position| {
         IVec2::new(max.x.max(position.x), max.y.max(position.y))
