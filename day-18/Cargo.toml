@@ -14,6 +14,7 @@ miette = { workspace = true }
 thiserror = { workspace = true }
 dhat = { workspace = true }
 glam = { workspace = true }
+rayon = { workspace = true }
 
 [dev-dependencies]
 divan = { workspace = true }
